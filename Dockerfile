@@ -3,21 +3,80 @@
 # Image Setup
 #--------------------------------------------------------------------------
 #
-# To edit the 'workspace' base Image, visit its repository on Github
-#    https://github.com/LaraDock/workspace
+
+FROM phusion/baseimage:latest
+
+RUN DEBIAN_FRONTEND=noninteractive
+RUN locale-gen en_US.UTF-8
+
+ENV LANGUAGE=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+ENV LC_CTYPE=UTF-8
+ENV LANG=en_US.UTF-8
+ENV TERM xterm
+
+# Add the "PHP" ppa
+RUN apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:ondrej/php
+
 #
-# To change its version, see the available Tags on the Docker Hub:
-#    https://hub.docker.com/r/laradock/workspace/tags/
+#--------------------------------------------------------------------------
+# Software's Installation
+#--------------------------------------------------------------------------
 #
 
-FROM laradock/workspace:1.3
+# Install "PHP Extentions", "libraries", "Software's"
+RUN apt-get update && \
+    apt-get install -y --force-yes \
+        php5.6-cli \
+        php5.6-common \
+        php5.6-curl \
+        php5.6-json \
+        php5.6-xml \
+        php5.6-mbstring \
+        php5.6-mcrypt \
+        php5.6-mysql \
+        php5.6-pgsql \
+        php5.6-sqlite \
+        php5.6-sqlite3 \
+        php5.6-zip \
+        php5.6-bcmath \
+        php5.6-memcached \
+        php5.6-gd \
+        php5.6-dev \
+        pkg-config \
+        libcurl4-openssl-dev \
+        libedit-dev \
+        libssl-dev \
+        libxml2-dev \
+        xz-utils \
+        libsqlite3-dev \
+        sqlite3 \
+        git \
+        curl \
+        vim \
+        nano \
+        postgresql-client \
+    && apt-get clean
+
+#####################################
+# Composer:
+#####################################
+
+# Install composer and add its bin to the PATH.
+RUN curl -s http://getcomposer.org/installer | php && \
+    echo "export PATH=${PATH}:/var/www/vendor/bin" >> ~/.bashrc && \
+    mv composer.phar /usr/local/bin/composer
+
+# Source the bash
+RUN . ~/.bashrc
 
 #
 #--------------------------------------------------------------------------
 # Mandatory Software's Installation
 #--------------------------------------------------------------------------
 #
-# Mandatory Software's such as ("php7.0-cli", "git", "vim", ....) are
+# Mandatory Software's such as ("php5.6-cli", "git", "vim", ....) are
 # installed on the base image 'laradock/workspace' image. If you want
 # to add more Software's or remove existing one, you need to edit the
 # base image (https://github.com/LaraDock/workspace).
@@ -87,12 +146,12 @@ ARG INSTALL_XDEBUG=false
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     # Load the xdebug extension only with phpunit commands
     apt-get update && \
-    apt-get install -y --force-yes php7.0-xdebug && \
-    sed -i 's/^/;/g' /etc/php/7.0/cli/conf.d/20-xdebug.ini && \
+    apt-get install -y --force-yes php5.6-xdebug && \
+    sed -i 's/^/;/g' /etc/php/5.6/cli/conf.d/20-xdebug.ini && \
     echo "alias phpunit='php -dzend_extension=xdebug.so /var/www/vendor/bin/phpunit'" >> ~/.bashrc \
 ;fi
 # ADD for REMOTE debugging
-COPY ./xdebug.ini /etc/php/7.0/cli/conf.d/xdebug.ini
+COPY ./xdebug.ini /etc/php/5.6/cli/conf.d/xdebug.ini
 
 
 #####################################
