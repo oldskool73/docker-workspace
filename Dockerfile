@@ -28,22 +28,22 @@ RUN apt-get install -y software-properties-common && \
 # Install "PHP Extentions", "libraries", "Software's"
 RUN apt-get update && \
     apt-get install -y --force-yes \
-        php5.6-cli \
-        php5.6-common \
-        php5.6-curl \
-        php5.6-json \
-        php5.6-xml \
-        php5.6-mbstring \
-        php5.6-mcrypt \
-        php5.6-mysql \
-        php5.6-pgsql \
-        php5.6-sqlite \
-        php5.6-sqlite3 \
-        php5.6-zip \
-        php5.6-bcmath \
-        php5.6-memcached \
-        php5.6-gd \
-        php5.6-dev \
+        php7.1-cli \
+        php7.1-common \
+        php7.1-curl \
+        php7.1-json \
+        php7.1-xml \
+        php7.1-mbstring \
+        php7.1-mcrypt \
+        php7.1-mysql \
+        php7.1-pgsql \
+        php7.1-sqlite \
+        php7.1-sqlite3 \
+        php7.1-zip \
+        php7.1-bcmath \
+        php7.1-memcached \
+        php7.1-gd \
+        php7.1-dev \
         pkg-config \
         libcurl4-openssl-dev \
         libedit-dev \
@@ -76,7 +76,7 @@ RUN . ~/.bashrc
 # Mandatory Software's Installation
 #--------------------------------------------------------------------------
 #
-# Mandatory Software's such as ("php5.6-cli", "git", "vim", ....) are
+# Mandatory Software's such as ("php7.1-cli", "git", "vim", ....) are
 # installed on the base image 'laradock/workspace' image. If you want
 # to add more Software's or remove existing one, you need to edit the
 # base image (https://github.com/LaraDock/workspace).
@@ -146,12 +146,12 @@ ARG INSTALL_XDEBUG=false
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     # Load the xdebug extension only with phpunit commands
     apt-get update && \
-    apt-get install -y --force-yes php5.6-xdebug && \
-    sed -i 's/^/;/g' /etc/php/5.6/cli/conf.d/20-xdebug.ini && \
+    apt-get install -y --force-yes php7.1-xdebug && \
+    sed -i 's/^/;/g' /etc/php/7.1/cli/conf.d/20-xdebug.ini && \
     echo "alias phpunit='php -dzend_extension=xdebug.so /var/www/vendor/bin/phpunit'" >> ~/.bashrc \
 ;fi
 # ADD for REMOTE debugging
-COPY ./xdebug.ini /etc/php/5.6/cli/conf.d/xdebug.ini
+COPY ./xdebug.ini /etc/php/7.1/cli/conf.d/xdebug.ini
 
 
 #####################################
